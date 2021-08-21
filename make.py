@@ -169,6 +169,18 @@ class KCU105(Board):
         Board.__init__(self, kcu105.BaseSoC, soc_capabilities={
             # Communication
             "serial",
+            #"ethernet",
+            # Storage
+            "sdcard",
+        }, bitstream_ext=".bit")
+
+class AESKU40(Board):
+    soc_kwargs = {"uart_baudrate": 115.2e3} # FIXME: understand why not working with more.
+    def __init__(self):
+        from litex_boards.targets import aesku40
+        Board.__init__(self, aesku40.BaseSoC, soc_capabilities={
+            # Communication
+            "serial",
             "ethernet",
             # Storage
             "sdcard",
@@ -204,13 +216,16 @@ class Nexys4DDR(Board):
 class NexysVideo(Board):
     def __init__(self):
         from litex_boards.targets import nexys_video
+        soc_kwargs = {
+        "sys_clk_freq" : int(50e6), # decrease sys_clk_freq to 50MHz (100MHz default).
+        }
         Board.__init__(self, nexys_video.BaseSoC, soc_capabilities={
             # Communication
             "usb_fifo",
             # Storage
             "sdcard",
             # Video
-            "framebuffer",
+            #"framebuffer",
         }, bitstream_ext=".bit")
 
 # MiniSpartan6 support -----------------------------------------------------------------------------
@@ -498,6 +513,7 @@ supported_boards = {
     "genesys2":         Genesys2,
     "kc705":            KC705,
     "kcu105":           KCU105,
+    "aesku40":          AESKU40,
     "zcu104":           ZCU104,
     "nexys4ddr":        Nexys4DDR,
     "nexys_video":      NexysVideo,
@@ -595,6 +611,11 @@ def main():
         # SoC peripherals --------------------------------------------------------------------------
         if board_name in ["arty", "arty_a7"]:
             from litex_boards.platforms.arty import _sdcard_pmod_io
+            board.platform.add_extension(_sdcard_pmod_io)
+
+        
+        if board_name in ["aesku40"]:
+            from litex_boards.platforms.aesku40 import _sdcard_pmod_io
             board.platform.add_extension(_sdcard_pmod_io)
 
         if board_name in ["orangecrab"]:
