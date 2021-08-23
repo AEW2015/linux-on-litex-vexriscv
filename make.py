@@ -213,19 +213,19 @@ class Nexys4DDR(Board):
 
 # NexysVideo support -------------------------------------------------------------------------------
 
-class NexysVideo(Board):
-    def __init__(self):
-        from litex_boards.targets import nexys_video
-        soc_kwargs = {
+class NexysVideo(Board):        
+    soc_kwargs = {
         "sys_clk_freq" : int(50e6), # decrease sys_clk_freq to 50MHz (100MHz default).
         }
+    def __init__(self):
+        from litex_boards.targets import nexys_video
         Board.__init__(self, nexys_video.BaseSoC, soc_capabilities={
             # Communication
             "usb_fifo",
             # Storage
             "sdcard",
             # Video
-            #"framebuffer",
+            "framebuffer",
         }, bitstream_ext=".bit")
 
 # MiniSpartan6 support -----------------------------------------------------------------------------
